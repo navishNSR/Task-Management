@@ -72,9 +72,8 @@ public class AuthController {
                 final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 final String jwt = jwtUtils.generateToken(userDetails.getUsername());
 
-                // Store Username and token in Redis
+                // Store Session in Redis
                 redisUserSessionManager.saveUserSession(username, jwt, expiration);
-//                redisService.saveToken(userDetails.getUsername(), jwt);
 
                 return ResponseEntity.ok(new LoginResponse("Success", "Login Successful", jwt));
             }
