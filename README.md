@@ -1,6 +1,6 @@
 # Task-Management
 
-This is a Task Management Application developed using Java Spring Boot. The application supports user authentication using JWT (JSON Web Token), session management with Redis and performs CRUD operations with MongoDB.
+This is a Task Management Application developed using Java Spring Boot. The application supports user authentication using JWT (JSON Web Token), session management with Redis and performs CRUD operations with MongoDB. It also includes role-based access control for user management, integrates JavaMailSender for automated email notifications and utilizes Spring Boot's RESTful API capabilities for seamless task management.
 
 # Features
 
