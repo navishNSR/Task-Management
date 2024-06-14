@@ -13,16 +13,16 @@ This is a Task Management Application developed using Java Spring Boot. The appl
 
 # Technologies Used
 
-Java
-Spring Boot
-Spring Security
-JWT (JSON Web Token)
-Redis
-MongoDB
+1. Java
+2. Spring Boot
+3. Spring Security
+4. JWT (JSON Web Token)
+5. Redis
+6. MongoDB
 
 # Prerequisites
 
-Java 17 or higher
-Gradle
-MongoDB
-Redis
+1. Java 17 or higher
+2. Gradle
+3. MongoDB
+4. Redis
