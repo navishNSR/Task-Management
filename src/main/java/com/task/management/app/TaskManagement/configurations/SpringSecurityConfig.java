@@ -28,7 +28,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exc ->
                         exc.accessDeniedPage("/access-denied"))

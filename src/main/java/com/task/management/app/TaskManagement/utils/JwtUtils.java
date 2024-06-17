@@ -3,7 +3,6 @@ package com.task.management.app.TaskManagement.utils;
 import com.task.management.app.TaskManagement.model.entries.User;
 import com.task.management.app.TaskManagement.repository.UserRepository;
 import com.task.management.app.TaskManagement.service.RedisService;
-import com.task.management.app.TaskManagement.service.RedisUserSessionManager;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -34,16 +33,13 @@ public class JwtUtils {
     @Autowired
     private RedisService redisService;
 
-    @Autowired
-    private RedisUserSessionManager redisUserSessionManager;
-
     private Key getSigningKey() {
         byte[] keyBytes = secret_key.getBytes(StandardCharsets.UTF_8);
         return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
     public String generateToken(String username) {
-        String token = redisUserSessionManager.getToken(username);
+        String token = redisService.getTokenByUsername(username);
         if (token != null && !token.isEmpty()){
             return token;
         }
@@ -64,11 +60,15 @@ public class JwtUtils {
 
     public Boolean validateToken(String token, String username) {
         final String tokenUserName = getUserNameFromToken(token);
-        return (tokenUserName.equals(username) && !isTokenExpired(token));
+        return (tokenUserName.equals(username) && !isTokenExpired(token) && redisService.getTokenByUsername(username) != null);
     }
 
     public String getUserNameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return getExpirationDateFromToken(token).before(new Date());
     }
 
     public Date getExpirationDateFromToken(String token) {
@@ -85,10 +85,6 @@ public class JwtUtils {
                 .setSigningKey(secret_key.getBytes())
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    private boolean isTokenExpired(String token) {
-        return getExpirationDateFromToken(token).before(new Date());
     }
 }
 

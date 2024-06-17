@@ -2,7 +2,6 @@ package com.task.management.app.TaskManagement.controller;
 
 import com.task.management.app.TaskManagement.model.responses.LoginResponse;
 import com.task.management.app.TaskManagement.service.RedisService;
-import com.task.management.app.TaskManagement.service.RedisUserSessionManager;
 import com.task.management.app.TaskManagement.service.UserDetailsServiceImpl;
 import com.task.management.app.TaskManagement.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
@@ -40,8 +36,8 @@ public class AuthController {
     @Autowired
     private RedisService redisService;
 
-    @Autowired
-    private RedisUserSessionManager redisUserSessionManager;
+//    @Autowired
+//    private RedisUserSessionManager redisUserSessionManager;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -52,7 +48,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest request) throws Exception {
         try {
-
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Basic ")) {
                 String base64Credentials = authorizationHeader.substring("Basic".length()).trim();
@@ -72,8 +67,9 @@ public class AuthController {
                 final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 final String jwt = jwtUtils.generateToken(userDetails.getUsername());
 
-                // Store Session in Redis
-                redisUserSessionManager.saveUserSession(username, jwt, expiration);
+                // Store Username and token in Redis
+//                redisUserSessionManager.saveUserSession(username, jwt, expiration);
+                redisService.storeToken(userDetails.getUsername(), jwt, expiration);
 
                 return ResponseEntity.ok(new LoginResponse("Success", "Login Successful", jwt));
             }
@@ -85,24 +81,15 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<?> logout(HttpServletRequest request) {
         // Extract the token from the request header
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Basic ")) {
-            String base64Credentials = authorizationHeader.substring("Basic".length()).trim();
-            byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-            String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-            final String[] values = credentials.split(":", 2);
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtils.getUserNameFromToken(token);
 
-            String username = values[0];
-
-            // Invalidate the session
-            redisUserSessionManager.deleteUserSession(username);
-
-            return ResponseEntity.ok("Logged out successfully.");
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token.");
+        // Invalidate the session
+        redisService.deleteToken(username);
+        return ResponseEntity.ok("Logged out successfully.");
     }
 
 }

@@ -1,22 +1,22 @@
 package com.task.management.app.TaskManagement.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RedisService {
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
-    public void saveToken(String username, String token) {
-        redisTemplate.opsForValue().set(username, token);
+    public void storeToken(String username, String token, long expiration) {
+        redisTemplate.opsForValue().set(username, token, expiration, TimeUnit.MILLISECONDS);
     }
 
-    public String getToken(String username) {
+    public String getTokenByUsername(String username) {
         return redisTemplate.opsForValue().get(username);
     }
 
