@@ -1,6 +1,6 @@
 # Task Management Application
 
-This Task Management Application is a comprehensive solution developed using Java Spring Boot. It features robust user authentication, session management, and CRUD operations, all backed by secure and scalable technologies. Below is a detailed description of the application, which can be used for your README file on GitHub.
+This Task Management Application is a comprehensive solution developed using Java Spring Boot. It features robust user authentication, session management and CRUD operations, all backed by secure and scalable technologies. Below is a detailed description of the application, which can be used for your README file on GitHub.
 
 ## Overview
 
