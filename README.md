@@ -19,10 +19,11 @@ Link: https://documenter.getpostman.com/view/2sA3XV7Jdu?version=latest#b2ae2a55-
 
 1. Java
 2. Spring Boot
-3. Spring Security
-4. JWT (JSON Web Token)
-5. Redis
-6. MongoDB
+3. Spring Java Mail Sender
+4. Spring Security
+5. JWT (JSON Web Token)
+6. Redis
+7. MongoDB
 
 # Prerequisites
 
@@ -30,3 +31,7 @@ Link: https://documenter.getpostman.com/view/2sA3XV7Jdu?version=latest#b2ae2a55-
 2. Gradle
 3. MongoDB
 4. Redis
+5. Any IDE
+
+
+**NOTE: If you want to contribute to the project please fork it. I will send you "gradle.properties" file. You can also ping me on my email navishsingh242892@gmail.com**
